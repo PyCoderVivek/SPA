@@ -44,39 +44,6 @@ This project is configured for easy deployment to Render.com.
    python manage.py runserver
    ```
 
-## Deploying to Render.com
+## AVAILABLE AT 
 
-1. Push your changes to GitHub:
-   ```
-   git add .
-   git commit -m "Prepared for Render deployment"
-   git push origin main
-   ```
-
-2. Log in to Render.com and create a new Web Service.
-
-3. Connect to your GitHub repository.
-
-4. Configure the following settings:
-   - **Name**: SkillEdge (or any name you prefer)
-   - **Environment**: Python
-   - **Region**: Choose the one closest to your users
-   - **Branch**: main
-   - **Build Command**: `./build.sh`
-   - **Start Command**: `cd SkillEdge-root && gunicorn SkillEdge.wsgi:application`
-   - **Plan**: Free
-
-5. Add the following environment variables in the Render dashboard:
-   - `GEMINI_API_KEY`: Your Gemini API key
-   - `SECRET_KEY`: A secure random string (Django secret key)
-   - `DEBUG`: false
-   - `PYTHON_VERSION`: 3.10 (or your preferred version)
-
-6. Click "Create Web Service" and Render will automatically deploy your application.
-
-7. (Optional) Create a PostgreSQL database on Render:
-   - Go to the Render dashboard and create a new PostgreSQL database
-   - Render will automatically create a `DATABASE_URL` environment variable
-   - Link the database to your web service
-
-8. Your application will be available at the URL provided by Render. 
+https://spa-em9r.onrender.com
