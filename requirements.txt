@@ -35,13 +35,7 @@ djangorestframework==3.14.0
 markdown==3.5.2
 django-filter==23.5
 
-Django>=5.1.4
-Pillow
-django-crispy-forms
-whitenoise
-gunicorn
-psycopg2-binary
-dj-database-url
+
 
 # Render.comn
 numpy
