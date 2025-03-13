@@ -1,9 +1,36 @@
-Django>=5.1.4
-Pillow
-django-crispy-forms
-whitenoise
-gunicorn
-psycopg2-binary
-dj-database-url
-python-dotenv
-google-generativeai
+# Core Django Requirements
+Django==5.0.2
+django-crispy-forms==2.1
+crispy-bootstrap4==2024.1
+Pillow==10.2.0
+
+# Database
+psycopg2-binary==2.9.9
+dj-database-url==2.1.0
+
+# Deployment & Static Files
+gunicorn==21.2.0
+whitenoise==6.6.0
+
+# Environment Variables
+python-dotenv==1.0.1
+
+# AI/ML Requirements
+google-generativeai==0.3.2
+
+# Security
+django-cors-headers==4.3.1
+
+# Utils
+requests==2.31.0
+urllib3==2.2.0
+python-dateutil==2.8.2
+
+# Performance & Caching
+django-cache-url==3.4.5
+redis==5.0.1
+
+# API
+djangorestframework==3.14.0
+markdown==3.5.2
+django-filter==23.5
