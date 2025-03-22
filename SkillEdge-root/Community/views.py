@@ -8,6 +8,66 @@ from .forms import PostForm, CommentForm
 from Authentication.models import Profile
 from django.http import JsonResponse
 
+# Topic keywords for automatic classification
+TOPIC_KEYWORDS = {
+    'Programming': [
+        'code', 'programming', 'python', 'java', 'javascript', 'function', 
+        'algorithm', 'debug', 'error', 'compiler', 'syntax'
+    ],
+    'Data Science': [
+        'data', 'analysis', 'machine learning', 'ai', 'statistics', 'pandas',
+        'numpy', 'dataset', 'model', 'prediction', 'analytics'
+    ],
+    'Web Development': [
+        'html', 'css', 'javascript', 'web', 'frontend', 'backend', 'api',
+        'react', 'angular', 'django', 'node', 'database'
+    ],
+    'Career Advice': [
+        'job', 'career', 'interview', 'resume', 'salary', 'skills',
+        'professional', 'experience', 'hiring', 'company'
+    ],
+    'Learning Resources': [
+        'learn', 'course', 'tutorial', 'book', 'resource', 'study',
+        'guide', 'documentation', 'example', 'practice'
+    ],
+    'Projects': [
+        'project', 'portfolio', 'github', 'collaborate', 'build',
+        'develop', 'create', 'implement', 'design', 'architecture'
+    ],
+    'Tech News': [
+        'news', 'update', 'release', 'announcement', 'technology',
+        'trend', 'innovation', 'latest', 'version', 'feature'
+    ]
+}
+
+def determine_topic(title, content):
+    """
+    Determine the most relevant topic based on post content and title
+    """
+    # Combine title and content for analysis
+    text = (title + " " + content).lower()
+    
+    # Count keyword matches for each topic
+    topic_scores = {}
+    for topic_name, keywords in TOPIC_KEYWORDS.items():
+        score = sum(1 for keyword in keywords if keyword.lower() in text)
+        topic_scores[topic_name] = score
+    
+    # Get the topic with the highest score
+    if topic_scores:
+        best_topic = max(topic_scores.items(), key=lambda x: x[1])
+        if best_topic[1] > 0:  # If we found at least one keyword match
+            return Topic.objects.get(name=best_topic[0])
+    
+    # Default to "General Discussion" if no clear match
+    return Topic.objects.get_or_create(
+        name="General Discussion",
+        defaults={
+            'description': 'General discussions and questions',
+            'icon': 'chat-dots'
+        }
+    )[0]
+
 def community_home(request):
     """Main community page with topic filters and post listing"""
     topics = Topic.objects.annotate(post_count=Count('posts'))
@@ -52,21 +112,24 @@ def community_home(request):
 
 @login_required
 def create_post(request):
-    """Create a new post"""
+    """Create a new post with automatic topic assignment"""
     if request.method == 'POST':
         form = PostForm(request.POST)
         if form.is_valid():
             post = form.save(commit=False)
             post.author = request.user
+            
+            # Automatically determine the topic
+            post.topic = determine_topic(form.cleaned_data['title'], form.cleaned_data['content'])
+            
             post.save()
-            messages.success(request, 'Your post has been created successfully!')
+            messages.success(request, f'Your post has been created successfully in the {post.topic.name} topic!')
             return redirect('post_detail', post.id)
     else:
         form = PostForm()
     
     context = {
         'form': form,
-        'topics': Topic.objects.all(),
     }
     return render(request, 'community/create_post.html', context)
 
